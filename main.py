@@ -23,7 +23,7 @@ class CalculatorApp(App):
 
 	#add in label number that pressed
 	def add_number(self, instance):
-		if self.formula == "0":
+		if self.formula == "0" or self.lbl_calc.text != "":
 			self.formula = ""
 		self.formula += str(instance.text)
 		self.update_label_result()
@@ -38,16 +38,15 @@ class CalculatorApp(App):
 
 	#setting basic operation
 	def add_operation(self, instance):
-
+		self.formula = self.lbl_result.text
 		if self.lbl_calc.text != "":
 			self.get_result(self)
 			self.lbl_calc.text = ""
-		if str(instance.text) == "x":
-			self.formula += "*"
-		else:
-			self.formula += str(instance.text)
 		self.update_label_calc()
-		self.formula = "0"
+		if str(instance.text) == "x":
+			self.lbl_calc.text += "*"
+		else:
+			self.lbl_calc.text += str(instance.text)
 
 
 	def get_result_div_one(self, instance):
@@ -63,11 +62,37 @@ class CalculatorApp(App):
 		pass
 
 	def get_result(self, instance):
-		self.update_label_calc()
+
+		label_text = self.lbl_calc.text #save expression data
+		length = len(label_text)		#get expression length for to find operation
+
+		#multiply press on "="
+		if label_text != "" and label_text[length-1] == "=":
+
+			self.lbl_calc.text = self.lbl_result.text 	#change expression on result
+			index = 0  									#operation's index
+			valide_abs_one = False						#less than one per module
+
+			#find operation's index
+			for i in range(length):
+				try:
+					#condition for numbers that less then one
+					if label_text[i] != "." and label_text[i] != "e" and ( label_text[i] != "-" or not valide_abs_one ) :
+						number = int(label_text[i])
+					else:
+						valide_abs_one = True
+				except:
+					index = i
+					break
+
+			self.lbl_calc.text += label_text[index:length-1]	#repeat operation and initial value
+
+		else:
+			self.update_label_calc()	#first pressing on "="
+
+
 		self.lbl_result.text = str(eval(self.lbl_calc.text))
-		self.formula = "="
-		self.update_label_calc()
-		self.formula = self.lbl_result.text
+		self.lbl_calc.text += "="
 		
 
 
