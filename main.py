@@ -10,144 +10,46 @@ Config.set('graphics', 'resizable', 0)
 Config.set('graphics', 'width', 400)
 Config.set('graphics', 'height', 500)
 
+from functions import *
 
 
 
 class CalculatorApp(App):
-	#change label value
-	def update_label_result(self):
-		self.lbl_result.text = self.formula
-
-	def update_label_calc(self):
-		self.lbl_calc.text += self.formula
-
 	#add in label number that pressed
 	def add_number(self, instance):
-		length = len(self.lbl_calc.text)
-
-		if self.valide_end_expression():
-			self.clear_label(self)
-
-		if (self.formula == "0" and str(instance.text) != ".") or (self.lbl_calc.text != "" and not self.valide_second_number):
-			self.formula = ""
-			if self.lbl_calc.text != "" :
-				self.valide_second_number = True
-		self.formula += str(instance.text)
-		self.update_label_result()
+		add_number_func(self, instance)
 	
 
 	#clear label from numbers
 	def clear_label(self, instance):
-		self.formula = "0"
-		self.update_label_result()
-		self.lbl_calc.text = ""
-		self.valide_second_number = False
+		clear_label_func(self)
 
 
 	#setting basic operation
 	def add_operation(self, instance):
-		
-		length = len(self.lbl_calc.text)		#get expression length for to find operation
-
-		
-		if self.lbl_calc.text != "":
-
-			if self.lbl_calc.text[length-1] == "=":
-				self.lbl_calc.text = self.lbl_result.text
-				self.formula = ""
-			else: 
-				self.get_result(self)
-				self.lbl_calc.text = self.lbl_result.text
-				self.valide_second_number = False
-
-		else:
-			self.update_label_calc()
-		
-		
-		if str(instance.text) == "x":
-			self.lbl_calc.text += "*"
-		else:
-			self.lbl_calc.text += str(instance.text)
+		add_operation_func(self, instance)
 
 
 	#one division on number that input
 	def get_result_div_one(self, instance):
-
-		if self.valide_end_expression():
-			self.lbl_calc.text = "1/("
-			self.lbl_calc.text += self.lbl_result.text
-			self.lbl_calc.text += ")"
-		else:
-			self.lbl_calc.text = "1/(" + self.formula + ")"
-
-		self.is_sub_operation = True
-		self.get_result(self)
+		get_result_div_one_func(self)
 
 
 	def get_result_sqr(self, instance):
-
-		if self.valide_end_expression():
-			self.lbl_calc.text = self.lbl_result.text
-			self.lbl_calc.text += "*"
-			self.lbl_calc.text += self.lbl_result.text
-		else:
-			self.lbl_calc.text = self.formula + "*" + self.formula
-
-		self.is_sub_operation = True
-		self.get_result(self)
+		get_result_sqr(self)
 
 	def get_result_sqrt(self, instance):
-		pass
+		get_result_sqrt(self)
 
-	def get_result_inversion(self):
-		pass
+	def get_result_inversion(self, inversion):
+		get_result_inversion(self)
+
 
 	def get_result(self, instance):
-
-		label_text = self.lbl_calc.text #save expression data
-		length = len(label_text)		#get expression length for to find operation
-
-		#multiply press on "="
-		if self.valide_end_expression() :
-
-			self.lbl_calc.text = self.lbl_result.text 	#change expression on result
-			index = 0  									#operation's index
-			valide_abs_one = False						#less than one per module
-
-			#find operation's index
-			for i in range(length):
-				try:
-					#condition for numbers that less then one
-					if label_text[i] != "." and label_text[i] != "e" and ( label_text[i] != "-" or not valide_abs_one ) :
-						number = int(label_text[i])
-					else:
-						valide_abs_one = True
-				except:
-					index = i
-					break
-
-			self.lbl_calc.text += label_text[index:length-1]	#repeat operation and initial value
-
-		elif not self.is_sub_operation:
-			self.update_label_calc()	#first pressing on "="
-		else:
-			self.is_sub_operation = False
-
-
-		self.lbl_result.text = str(eval(self.lbl_calc.text))
-		self.lbl_calc.text += "="
+		get_result_func(self)
 
 
 
-
-	def valide_end_expression(self):
-		label_text = self.lbl_calc.text #save expression data
-		length = len(label_text)		#get expression length for to find operation
-
-		#multiply press on "="
-		if label_text != "" and label_text[length-1] == "=":
-			return True
-		
 
 
 	def build(self):
@@ -160,7 +62,7 @@ class CalculatorApp(App):
 		gl = GridLayout(cols=4, size_hint=(1, .8), spacing=1)
 
 		self.lbl_calc = Label(text="", size_hint=(1, .05), font_size=16, text_size=(400 - 4, 500 * .05 - 4), halign='right', valign='center')
-		self.lbl_result = Label(text="0", size_hint=(1, .15), font_size=50, text_size=(400 - 4, 500 * .15 - 4), halign='right', valign='center')
+		self.lbl_result = Label(text="0", size_hint=(1, .15), font_size=40, text_size=(400 - 4, 500 * .15 - 4), halign='right', valign='center')
 		bl.add_widget( self.lbl_calc )
 		bl.add_widget( self.lbl_result )
 
