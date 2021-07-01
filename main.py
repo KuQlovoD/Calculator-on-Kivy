@@ -23,8 +23,10 @@ class CalculatorApp(App):
 
 	#add in label number that pressed
 	def add_number(self, instance):
-		if self.formula == "0" or self.lbl_calc.text != "":
+		if self.formula == "0" or (self.lbl_calc.text != "" and not self.valide_second_number):
 			self.formula = ""
+			if self.lbl_calc.text != "" :
+				self.valide_second_number = True
 		self.formula += str(instance.text)
 		self.update_label_result()
 	
@@ -34,19 +36,27 @@ class CalculatorApp(App):
 		self.formula = "0"
 		self.update_label_result()
 		self.lbl_calc.text = ""
+		self.valide_second_number = False
 
 
 	#setting basic operation
 	def add_operation(self, instance):
-		self.formula = self.lbl_result.text
-		if self.lbl_calc.text != "":
-			self.get_result(self)
-			self.lbl_calc.text = ""
-		self.update_label_calc()
+		
+		length = len(self.lbl_calc.text)		#get expression length for to find operation
+
+		
+		if self.lbl_calc.text != "" and self.lbl_calc.text[length-1] == "=":
+			self.lbl_calc.text = self.lbl_result.text
+			self.formula = ""
+		else:
+			self.update_label_calc()
+		
+		
 		if str(instance.text) == "x":
 			self.lbl_calc.text += "*"
 		else:
 			self.lbl_calc.text += str(instance.text)
+
 
 
 	def get_result_div_one(self, instance):
@@ -100,6 +110,7 @@ class CalculatorApp(App):
 		self.formula = "0"
 		bl = BoxLayout(orientation = "vertical", padding=2)
 		gl = GridLayout(cols=4, size_hint=(1, .8), spacing=1)
+		self.valide_second_number = False
 
 		self.lbl_calc = Label(text="", size_hint=(1, .05), font_size=16, text_size=(400 - 4, 500 * .05 - 4), halign='right', valign='center')
 		self.lbl_result = Label(text="0", size_hint=(1, .15), font_size=50, text_size=(400 - 4, 500 * .15 - 4), halign='right', valign='center')
