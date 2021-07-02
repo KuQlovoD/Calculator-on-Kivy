@@ -1,16 +1,17 @@
-from math import *
+from math import *	#import math module's methods
 
 
+#updating result's label
 def update_label_result(self):
 	self.lbl_result.text = self.formula
 
 
-
+#updating expession label
 def update_label_calc(self):
 	self.lbl_calc.text += self.formula
 
 
-
+#add number on expession
 def add_number_func(self, instance):
 	length = len(self.lbl_calc.text)
 
@@ -21,11 +22,12 @@ def add_number_func(self, instance):
 		self.formula = ""
 		if self.lbl_calc.text != "" :
 			self.valide_second_number = True
+
 	self.formula += str(instance.text)
 	update_label_result(self)
 
 
-
+#clearing labels
 def clear_label_func(self):
 	self.formula = "0"
 	update_label_result(self)
@@ -33,7 +35,7 @@ def clear_label_func(self):
 	self.valide_second_number = False
 
 
-
+#add operation on expession
 def add_operation_func(self, instance):
 	
 	length = len(self.lbl_calc.text)		#get expression length for to find operation
@@ -41,22 +43,23 @@ def add_operation_func(self, instance):
 	
 	if self.lbl_calc.text != "":
 
-		if self.lbl_calc.text[length-1] == "=":
-			self.lbl_calc.text = self.lbl_result.text
-			self.formula = ""
+		if self.lbl_calc.text[length-1] == "=":			#happening when previous expession calculated
+			self.lbl_calc.text = self.lbl_result.text 	#save result previous expession
+			self.formula = ""							#release inputing number
 		else: 
-			get_result_func(self)
-			self.lbl_calc.text = self.lbl_result.text
-			self.valide_second_number = False
+			get_result_func(self)						#getting result
+			self.lbl_calc.text = self.lbl_result.text 	#save result previous expession
+			self.valide_second_number = False			#validation on input second number
 
-	else:
-		update_label_calc(self)
+
+	else:									#happening when expession don't input
+		update_label_calc(self)				#updating expession
 	
 	
-	if str(instance.text) == "x":
-		self.lbl_calc.text += "*"
+	if str(instance.text) == "x":					#happening when pressing "x"
+		self.lbl_calc.text += "*"					#change "x" in "*" and add it expession 
 	else:
-		self.lbl_calc.text += str(instance.text)
+		self.lbl_calc.text += str(instance.text)	#add operation in expession (happening when pressong not "x")
 
 
 
@@ -157,10 +160,10 @@ def get_result_sqr(self):
 	else:
 		self.lbl_calc.text = self.formula + "*" + self.formula
 
-
-
 	self.is_sub_operation = True
 	get_result_func(self)
+
+
 
 def get_result_sqrt(self):
 	length = len(self.lbl_calc.text)
@@ -182,9 +185,10 @@ def get_result_sqrt(self):
 	else:
 		self.lbl_calc.text = "sqrt(" + self.formula + ")"
 
-
 	self.is_sub_operation = True
 	get_result_func(self)
+
+
 
 def get_result_inversion(self):
 	self.formula = self.lbl_result.text
